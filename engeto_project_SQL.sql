@@ -16,8 +16,8 @@ WHERE calculation_code = 100
 	AND value_type_code = 5958
 	AND value IS NOT NULL
 	AND industry_branch_code IS NOT NULL
-	AND payroll_year >=2006 
-	AND payroll_year <=2018
+	AND payroll_year >= 2006 
+	AND payroll_year <= 2018
 GROUP BY payroll_year, industry_branch_code, industry_name
 ORDER BY payroll_year, industry_branch_code;
 
