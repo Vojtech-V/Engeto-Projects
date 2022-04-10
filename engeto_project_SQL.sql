@@ -221,7 +221,7 @@ SELECT
 FROM countries
 WHERE continent = 'Europe';
 
-CREATE OR REPLACE TABLE v_vojta_veverka_countries_final AS
+CREATE OR REPLACE TABLE t_vojta_veverka_project_SQL_secondary_final AS
 SELECT
 	e.country,
 	e.`year`,
