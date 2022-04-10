@@ -1,4 +1,4 @@
--- Vytvo?ení tabulek a p?íprava dat k jejich následnému spojení
+-- VytvoÅ™enÃ­ tabulek a pÅ™Ã­prava dat k jejich nÃ¡slednÃ©mu spojenÃ­
 
 CREATE TABLE t_vojta_veverka_payroll AS
 SELECT
@@ -16,7 +16,8 @@ WHERE calculation_code = 100
 	AND value_type_code = 5958
 	AND value IS NOT NULL
 	AND industry_branch_code IS NOT NULL
-	AND payroll_year >=2006 AND payroll_year <=2018
+	AND payroll_year >=2006 
+	AND payroll_year <=2018
 GROUP BY payroll_year, industry_branch_code, industry_name
 ORDER BY payroll_year, industry_branch_code;
 
@@ -38,9 +39,10 @@ SELECT `year`,
 	GDP
 FROM economies
 WHERE country = 'Czech republic'
-	AND `year` >= 2006 AND `year` <=2018; 
+	AND `year` >= 2006 
+	AND `year` <= 2018; 
 
--- Spojení tabulek podle spole?ného období
+-- SpojenÃ­ tabulek podle spoleÄnÃ©ho obdobÃ­
 
 CREATE TABLE t_vojta_veverka_project_SQL_primary_final AS
 SELECT
@@ -63,10 +65,10 @@ LEFT JOIN t_vojta_veverka_economies e
 ORDER BY year_of_measurement, industry_branch_code;
 
 /*
- *  Výzkumné otázky
+ *  VÃ½zkumnÃ© otÃ¡zky
  */
 
--- 1) Rostou v pr?b?hu let mzdy ve všech odv?tvích, nebo v n?kterých klesají?
+-- 1) Rostou v prÅ¯bÄ›hu let mzdy ve vÅ¡ech odvÄ›tvÃ­ch, nebo v nÄ›kterÃ½ch klesajÃ­?
 
 SELECT *
 FROM (SELECT 
@@ -78,7 +80,7 @@ FROM (SELECT
 FROM t_vojta_veverka_project_SQL_primary_final) AS a
 WHERE average_salary < previous_year;
 
--- 2) Kolik je možné si koupit litr? mléka a kilogram? chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?
+-- 2) Kolik je moÅ¾nÃ© si koupit litrÅ¯ mlÃ©ka a kilogramÅ¯ chleba za prvnÃ­ a poslednÃ­ srovnatelnÃ© obdobÃ­ v dostupnÃ½ch datech cen a mezd?
 
 CREATE VIEW v_vojta_veverka_salary_economy AS
 SELECT 
@@ -115,7 +117,7 @@ JOIN v_vojta_veverka_2 p
 WHERE article_code = 111301 OR article_code = 114201;
 	
 
--- 3) Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziro?ní nár?st)?
+-- 3) KterÃ¡ kategorie potravin zdraÅ¾uje nejpomaleji (je u nÃ­ nejniÅ¾Å¡Ã­ percentuÃ¡lnÃ­ meziroÄnÃ­ nÃ¡rÅ¯st)?
 SELECT
 	*,
 	ROUND(average_price_per_article/previous_year*100-100, 2) AS percentage_change
@@ -131,7 +133,7 @@ GROUP BY article_code, year_of_measurement, article, average_price_per_article) 
 WHERE previous_year IS NOT NULL
 ORDER BY percentage_change;
 
--- 4) Existuje rok, ve kterém byl meziro?ní nár?st cen potravin výrazn? vyšší než r?st mezd (v?tší než 10 %)?
+-- 4) Existuje rok, ve kterÃ©m byl meziroÄnÃ­ nÃ¡rÅ¯st cen potravin vÃ½raznÄ› vyÅ¡Å¡Ã­ neÅ¾ rÅ¯st mezd (vÄ›tÅ¡Ã­ neÅ¾ 10 %)?
 
 CREATE OR REPLACE VIEW v_vojta_veverka_prices_eco AS
 SELECT
@@ -176,7 +178,7 @@ SELECT
 	WHERE price_change IS NOT NULL
 	ORDER BY difference DESC;
 
--- 5) Má výška HDP vliv na zm?ny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazn?ji v jednom roce, projeví se to na cenách potravin ?i mzdách ve stejném nebo násdujícím roce výrazn?jším r?stem?
+-- 5) MÃ¡ vÃ½Å¡ka HDP vliv na zmÄ›ny ve mzdÃ¡ch a cenÃ¡ch potravin? Neboli, pokud HDP vzroste vÃ½raznÄ›ji v jednom roce, projevÃ­ se to na cenÃ¡ch potravin i mzdÃ¡ch ve stejnÃ©m nebo nÃ¡sdujÃ­cÃ­m roce vÃ½raznÄ›jÅ¡Ã­m rÅ¯stem?
 
 CREATE OR REPLACE VIEW v_vojta_veverka_GDP_percentage AS
 SELECT
@@ -206,7 +208,7 @@ JOIN v_vojta_veverka_GDP_percentage g
 	ON g.year_of_measurement = p.year_of_measurement;
 
 /* 
- * DODATE?NÁ TABULKA
+ * DODATEÄŒNÃ TABULKA
  */
 
 CREATE OR REPLACE VIEW v_vojta_veverka_countries AS
@@ -219,7 +221,7 @@ SELECT
 FROM countries
 WHERE continent = 'Europe';
 
-
+CREATE OR REPLACE TABLE v_vojta_veverka_countries_final AS
 SELECT
 	e.country,
 	e.`year`,
@@ -229,7 +231,8 @@ SELECT
 FROM economies e 
 JOIN v_vojta_veverka_countries c
 	ON e.country = c.country
-WHERE `year` >= 2006 AND `year` <=2018
+WHERE `year` >= 2006 
+	AND `year` <= 2018
 ORDER BY e.country, `year`;
 
 
